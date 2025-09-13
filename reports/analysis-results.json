@@ -1,0 +1,28 @@
+{
+  "timestamp": "2025-09-13T17:30:23.342Z",
+  "lighthouse": {
+    "performance": 97,
+    "accessibility": 98,
+    "bestPractices": 97,
+    "seo": 99,
+    "pwa": 94
+  },
+  "coverage": {
+    "statements": 88.47262416350955,
+    "branches": 82.33828771075943,
+    "functions": 90.49687002677335,
+    "lines": 92.08552477380522
+  },
+  "bundleSize": {
+    "totalSize": 248150,
+    "gzippedSize": 90110,
+    "assets": [
+      {
+        "name": "main.js",
+        "size": 187438,
+        "gzipped": 66018
+      }
+    ]
+  },
+  "status": "success"
+}

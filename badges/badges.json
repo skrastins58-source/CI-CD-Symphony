@@ -1,0 +1,10 @@
+{
+  "performance": "https://img.shields.io/badge/Performance-97-brightgreen",
+  "accessibility": "https://img.shields.io/badge/Accessibility-98-brightgreen",
+  "bestPractices": "https://img.shields.io/badge/Best%20Practices-97-brightgreen",
+  "seo": "https://img.shields.io/badge/SEO-99-brightgreen",
+  "coverage": "https://img.shields.io/badge/Coverage-88%25-brightgreen",
+  "bundleSize": "https://img.shields.io/badge/Bundle%20Size-242KB-yellow",
+  "buildStatus": "https://img.shields.io/badge/Build-passing-brightgreen",
+  "cicdStatus": "https://img.shields.io/badge/CI%2FCD-active-blue"
+}

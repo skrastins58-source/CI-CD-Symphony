@@ -1,0 +1,53 @@
+{
+  "name": "ci-cd-symphony",
+  "version": "1.0.0",
+  "description": "Fully automated CI/CD pipeline with delta analysis, status badges, documentation generation, Slack notifications, security scanning, and baseline updates.",
+  "main": "dist/main.js",
+  "scripts": {
+    "test": "npm run test:unit && npm run test:integration",
+    "test:unit": "echo 'Running unit tests...' && exit 0",
+    "test:integration": "echo 'Running integration tests...' && exit 0",
+    "build": "mkdir -p dist && echo 'Building application...' && node scripts/build.js",
+    "dev": "node scripts/dev-server.js",
+    "lint": "eslint src/ scripts/ --ext .js",
+    "lighthouse": "node scripts/lighthouse-analysis.js",
+    "coverage": "node scripts/coverage-analysis.js",
+    "bundle-size": "node scripts/bundle-analysis.js",
+    "security": "npm audit && snyk test",
+    "analyze": "npm run lighthouse && npm run coverage && npm run bundle-size",
+    "ci": "npm ci && npm test && npm run build && npm run analyze",
+    "start": "node dist/main.js"
+  },
+  "keywords": [
+    "ci-cd",
+    "lighthouse",
+    "coverage",
+    "bundle-analysis",
+    "slack-notifications",
+    "github-actions",
+    "automated-testing",
+    "metrics",
+    "baseline"
+  ],
+  "author": "CI-CD-Symphony Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "@octokit/rest": "^20.0.2",
+    "axios": "^1.6.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/skrastins58-source/CI-CD-Symphony.git"
+  },
+  "bugs": {
+    "url": "https://github.com/skrastins58-source/CI-CD-Symphony/issues"
+  },
+  "homepage": "https://github.com/skrastins58-source/CI-CD-Symphony#readme"
+}

@@ -1,0 +1,53 @@
+{
+  "lighthouse": {
+    "performance": 95,
+    "accessibility": 100,
+    "bestPractices": 100,
+    "seo": 100,
+    "pwa": 90,
+    "timestamp": "2024-01-01T00:00:00.000Z",
+    "url": "https://localhost:3000"
+  },
+  "coverage": {
+    "statements": 85.5,
+    "branches": 80.2,
+    "functions": 90.1,
+    "lines": 87.3,
+    "timestamp": "2024-01-01T00:00:00.000Z"
+  },
+  "bundleSize": {
+    "totalSize": 245760,
+    "gzippedSize": 89334,
+    "assets": [
+      {
+        "name": "main.js",
+        "size": 187392,
+        "gzipped": 65432
+      },
+      {
+        "name": "vendor.js", 
+        "size": 58368,
+        "gzipped": 23902
+      }
+    ],
+    "timestamp": "2024-01-01T00:00:00.000Z"
+  },
+  "security": {
+    "vulnerabilities": {
+      "critical": 0,
+      "high": 0,
+      "medium": 0,
+      "low": 1
+    },
+    "auditSummary": "1 low severity vulnerability found",
+    "timestamp": "2024-01-01T00:00:00.000Z"
+  },
+  "meta": {
+    "version": "1.0.0",
+    "branch": "main",
+    "commit": "initial",
+    "buildNumber": 1,
+    "environment": "production",
+    "lastUpdated": "2024-01-01T00:00:00.000Z"
+  }
+}
