@@ -73,11 +73,11 @@ CI/CD Symphony is a comprehensive automated CI/CD pipeline template with metrics
 - `src/client.test.js` - Frontend tests
 
 ### Generated Directories (Created by scripts)
-- `dist/` - Webpack build output
-- `reports/` - Analysis results JSON files
-- `badges/` - Generated SVG badges
-- `baselines/` - Metric baseline tracking
-- `coverage/` - Jest coverage reports
+- `dist/` - Webpack build output (ignored)
+- `reports/` - Analysis results JSON files (ignored - generated in CI)
+- `badges/` - Generated SVG badges (ignored - generated in CI)  
+- `baselines/` - Metric baseline tracking (tracked in git)
+- `coverage/` - Jest coverage reports (ignored)
 
 ## ⚡ Build and Development
 

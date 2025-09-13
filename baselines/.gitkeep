@@ -1,0 +1,18 @@
+{
+  "lastUpdated": "2025-01-01T00:00:00.000Z",
+  "bundleSize": {
+    "current": 0,
+    "trend": "stable",
+    "history": []
+  },
+  "performance": {
+    "current": 0,
+    "trend": "stable", 
+    "history": []
+  },
+  "coverage": {
+    "current": 0,
+    "trend": "stable",
+    "history": []
+  }
+}
