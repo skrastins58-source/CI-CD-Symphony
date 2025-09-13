@@ -1,3 +1,9 @@
+
+=======
+permissions:
+  contents: read
+  pull-requests: write
+
 name: 🎼 CI/CD Symphony
 
 on:
@@ -236,6 +242,7 @@ jobs:
             const prNumber = context.payload.number;
             const previewUrl = `https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/pr-${prNumber}/`;
             
+
             const comment = `## 🚀 Preview Deployment
             
             Your changes have been deployed to a preview environment:
@@ -243,6 +250,11 @@ jobs:
             🔗 **Preview URL:** ${previewUrl}
             📊 **Reports:** ${previewUrl}reports/
             
+=======
+            const comment = `## 🚀 Preview Deployment`\n            
+            Your changes have been deployed to a preview environment:\n            
+            🔗 **Preview URL:** ${previewUrl}\n            📊 **Reports:** ${previewUrl}reports/\n            
+
             *This preview will be updated with each new commit to this PR.*`;
             
             // Find existing preview comment
