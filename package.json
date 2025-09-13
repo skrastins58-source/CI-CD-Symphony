@@ -4,7 +4,7 @@
   "description": "Pilnībā automatizēta CI/CD plūsma ar delta analīzi, statusa badge, dokumentācijas ģenerēšanu, Slack notifikācijām, drošības skenēšanu un baseline atjaunošanu.",
   "main": "src/app.js",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "node src/app.js",
     "build": "webpack --mode=production",
     "build:dev": "webpack --mode=development",
     "test": "jest",
