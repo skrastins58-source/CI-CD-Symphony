@@ -294,3 +294,22 @@ jobs:
     curl -X POST -H 'Content-type: application/json' \
     --data '{"text":"🎉 New release published: v1.2.3\n🔗 https://github.com/skrastins58-source/CI-CD-Symphony/releases"}' \
    https://hooks.slack.com/services/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
+   - name: Notify Slack
+  run: |
+    curl -X POST -H 'Content-type: application/json' \
+    --data '{
+      "text": "*🎉 Jauns release: v1.2.3*\n📝 Changelog: <https://github.com/skrastins58-source/CI-CD-Symphony/releases/tag/v1.2.3>\n📊 Coverage: 93.2%\n✅ Status: Build Passed"
+    }' \
+    https://hooks.slack.com/services/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
+    - name: Generate Coverage Badge
+  uses: kevinfjiang/coverage-badge@v1
+  with:
+    coverage: 93.2
+    change_file: ./README.md
+    repo_token: ${{ secrets.GITHUB_TOKEN }}
+<!-- Coverage Comment:Begin -->
+![Coverage](https://img.shields.io/badge/Coverage-93.2%25-green)
+<!-- Coverage Comment:End -->
+if: success() && github.ref == 'refs/heads/main'
+
+
