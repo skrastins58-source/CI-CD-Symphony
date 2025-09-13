@@ -1,0 +1,41 @@
+{
+  "name": "ci-cd-symphony",
+  "version": "1.0.0",
+  "description": "Pilnībā automatizēta CI/CD plūsma ar delta analīzi, statusa badge, dokumentācijas ģenerēšanu, Slack notifikācijām, drošības skenēšanu un baseline atjaunošanu.",
+  "main": "dist/main.js",
+  "scripts": {
+    "test": "jest",
+    "build": "webpack --config webpack.config.js",
+    "build:server": "echo 'Server build not needed - Node.js runs directly'",
+    "dev": "webpack serve --config webpack.config.js --mode development",
+    "server": "node src/main.js",
+    "lint": "eslint src/**/*.js",
+    "start": "node src/main.js"
+  },
+  "keywords": [
+    "ci",
+    "cd",
+    "pipeline",
+    "automation",
+    "devops"
+  ],
+  "author": "skrastins58-source",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.23.0",
+    "@babel/preset-env": "^7.23.0",
+    "axios": "^1.5.0",
+    "babel-loader": "^9.1.3",
+    "eslint": "^8.50.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "lighthouse": "^11.0.0",
+    "supertest": "^6.3.3",
+    "webpack": "^5.88.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
