@@ -1,10 +1,6 @@
 {
     "files.autoSave": "onWindowChange",
-    "workbench.editorAssociations": {
-        "*.github": "copilot-instructions.md"
-    },
     "workbench.editor.autoLockGroups": {
         "default": true
-    },
-    "terminal.integrated.automationProfile.linux": null
+    }
 }

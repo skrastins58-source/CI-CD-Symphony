@@ -1,36 +1,32 @@
 # 🤖 Copilot Instructions
 
 ## 🎯 Goal
-Build and maintain a fully automated CI/CD pipeline that includes:
+Build and maintain a fully automated CI/CD pipeline that includes Lighthouse analysis, coverage tracking, bundle monitoring, Slack notifications, semantic PR checks, and automated releases.
 
-- Lighthouse performance analysis
-- Coverage tracking
-- Bundle size monitoring
-- Slack notifications
-- Semantic PR checks
-- Baseline metric updates
-- GitHub Pages publishing
+## 🏛️ Architecture Overview
+This project uses a standard Node.js setup orchestrated by a GitHub Actions workflow (`.github/workflows/ci-cd-symphony.yml`).
 
-## 📦 Required Files
-- `.github/workflows/ci-cd-symphony.yml`
-- `metrics/metrics-baseline.json`
-- `coverage/coverage-summary.json`
-- `dist/main.js`
-- `package.json` and `package-lock.json`
+- **Bundling**: `webpack` processes `src/index.js` and outputs the final bundle to `dist/main.js`. The configuration is in `webpack.config.js`.
+- **Testing**: `jest` runs tests from `src/**/*.test.js`. It's configured in `jest.config.js` to generate coverage reports in `coverage/`, including the `coverage-summary.json` used by the CI pipeline.
+- **Linting**: `eslint` enforces code style. Rules are defined in `.eslintrc.json`.
+- **Automation**: `husky` and `lint-staged` are used for pre-commit hooks to automatically lint and fix staged files, ensuring code quality before it reaches the repository.
+- **CI/CD**: The entire workflow is defined in `.github/workflows/ci-cd-symphony.yml`. It automates everything from testing to creating releases with `semantic-release`.
 
-## 🔐 Secrets Needed
-- `SLACK_WEBHOOK_URL`
-- `SNYK_TOKEN`
-- `GITHUB_TOKEN` (default)
-- *(Optional)* `NETLIFY_AUTH_TOKEN`, `NETLIFY_SITE_ID`
+## 🧑‍💻 Developer Workflow
 
-## 🧪 Testing Instructions
-Ensure `npm ci` works locally before pushing.
-Use semantic PR titles: `fix:`, `feat:`, `chore:`, etc.
+### Local Development
+1.  **Install Dependencies**: Run `npm install` to set up the project.
+2.  **Build**: To create a production bundle, run `npm run build`.
+3.  **Test**: Run `npm run test` to execute tests. Use `npm run coverage` to generate a coverage report.
+4.  **Lint**: Run `npm run lint` to check for code style issues.
 
-## ✅ Success Criteria
-- CI passes without errors
-- Status badge is generated
-- Slack message is sent
-- PR comment includes metrics
-- Baseline is updated after merge
+### Committing and Pushing
+- **Pre-commit Hook**: When you commit, a pre-commit hook automatically runs `eslint --fix` on staged `.js` files.
+- **Semantic Commits**: Commit messages **must** follow the semantic convention (e.g., `feat:`, `fix:`, `chore:`). This is critical for the `semantic-release` process to automatically version and release the software.
+
+### Key Files
+- `.github/workflows/ci-cd-symphony.yml`: The main CI/CD pipeline definition.
+- `package.json`: Defines scripts, dependencies, and `lint-staged` configuration.
+- `jest.config.js`: Jest configuration, including coverage reporters.
+- `webpack.config.js`: Webpack configuration for bundling.
+- `.eslintrc.json`: ESLint rules for code quality.
