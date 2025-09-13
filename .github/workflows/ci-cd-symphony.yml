@@ -284,3 +284,13 @@ jobs:
                 body: comment
               });
             }
+            - name: Notify Slack
+  run: |
+    curl -X POST -H 'Content-type: application/json' \
+    --data '{"text":"🎉 New release published: v1.2.3\n🔗 https://github.com/skrastins58-source/CI-CD-Symphony/releases"}' \
+    https://hooks.slack.com/services/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
+- name: Notify Slack
+  run: |
+    curl -X POST -H 'Content-type: application/json' \
+    --data '{"text":"🎉 New release published: v1.2.3\n🔗 https://github.com/skrastins58-source/CI-CD-Symphony/releases"}' \
+   https://hooks.slack.com/services/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
