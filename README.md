@@ -30,7 +30,7 @@ Pilnībā automatizēta CI/CD plūsma ar delta analīzi, statusa badge, dokument
 - **Automatic Updates**: Baseline metrics updated on main branch merges
 - **Quality Gates**: Only acceptable metrics become new baselines
 - **Historical Tracking**: Complete metrics history with trend analysis
-
+			
 ### 🔒 Security & Quality
 - **CodeQL Scanning**: Automated security vulnerability detection
 - **NPM Audit**: Dependency security monitoring
