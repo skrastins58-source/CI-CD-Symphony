@@ -1,0 +1,37 @@
+{
+  "total": {
+    "lines": {
+      "total": 1250,
+      "covered": 1092,
+      "skipped": 0,
+      "pct": 87.36
+    },
+    "functions": {
+      "total": 145,
+      "covered": 132,
+      "skipped": 0,
+      "pct": 91.03
+    },
+    "statements": {
+      "total": 1180,
+      "covered": 1009,
+      "skipped": 0,
+      "pct": 85.51
+    },
+    "branches": {
+      "total": 234,
+      "covered": 188,
+      "skipped": 0,
+      "pct": 80.34
+    }
+  },
+  "timestamp": "2024-01-01T00:00:00.000Z",
+  "coverageThresholds": {
+    "global": {
+      "branches": 80,
+      "functions": 90,
+      "lines": 85,
+      "statements": 85
+    }
+  }
+}
