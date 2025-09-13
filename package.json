@@ -1,0 +1,22 @@
+{
+  "name": "ci-cd-symphony",
+  "version": "1.0.0",
+  "description": "Fully automated CI/CD pipeline with delta analysis, status badges, documentation generation, Slack notifications, security scanning and baseline updates. Perfect for modern teams wanting visible, maintainable and inspiring DevOps culture.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"No tests specified yet\" && exit 0",
+    "build": "echo \"No build script specified yet\" && exit 0"
+  },
+  "keywords": ["ci-cd", "devops", "automation", "github-actions", "pipeline"],
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/skrastins58-source/CI-CD-Symphony.git"
+  },
+  "devDependencies": {
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/npm": "^12.0.2",
+    "semantic-release": "^24.2.8"
+  }
+}
