@@ -1,0 +1,220 @@
+name: 🔌 API Generator
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # Every 6 hours
+  workflow_dispatch:
+  repository_dispatch:
+    types: [metrics-updated]
+
+jobs:
+  generate-api:
+    name: 🔌 Generate API Endpoints
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 🛎️ Checkout
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 📊 Generate API data
+        run: |
+          # Create API directory structure
+          mkdir -p api/{metrics,badges,history}
+          
+          # Generate current metrics API
+          node -e "
+          const fs = require('fs');
+          const path = require('path');
+          
+          // Load latest baseline
+          const baselinePath = 'baselines/metrics.json';
+          let metrics = { error: 'No baseline data available' };
+          
+          if (fs.existsSync(baselinePath)) {
+            const baseline = JSON.parse(fs.readFileSync(baselinePath, 'utf8'));
+            metrics = {
+              performance: baseline.performance?.performance || null,
+              coverage: baseline.coverage?.total || null,
+              bundleSize: baseline.bundleSize?.total || null,
+              timestamp: baseline.created,
+              commit: baseline.commit,
+              branch: baseline.branch
+            };
+          }
+          
+          fs.writeFileSync('api/metrics/index.json', JSON.stringify(metrics, null, 2));
+          fs.writeFileSync('api/metrics.json', JSON.stringify(metrics, null, 2));
+          "
+
+      - name: 📈 Generate history API
+        run: |
+          node -e "
+          const fs = require('fs');
+          
+          // Load history
+          const historyPath = 'baselines/history.json';
+          let history = [];
+          
+          if (fs.existsSync(historyPath)) {
+            history = JSON.parse(fs.readFileSync(historyPath, 'utf8'));
+          }
+          
+          fs.writeFileSync('api/history/index.json', JSON.stringify(history, null, 2));
+          fs.writeFileSync('api/history.json', JSON.stringify(history, null, 2));
+          "
+
+      - name: 🏷️ Generate badge APIs
+        run: |
+          # Generate badge endpoints
+          if [ -f "badges/badges.json" ]; then
+            node -e "
+            const fs = require('fs');
+            const badges = JSON.parse(fs.readFileSync('badges/badges.json', 'utf8'));
+            
+            // Generate individual badge endpoints
+            Object.keys(badges).forEach(key => {
+              if (badges[key].svg) {
+                fs.writeFileSync(\`api/badges/\${key}.svg\`, badges[key].svg);
+              }
+              fs.writeFileSync(\`api/badges/\${key}.json\`, JSON.stringify(badges[key], null, 2));
+            });
+            "
+          fi
+
+      - name: 📋 Generate API index
+        run: |
+          node -e "
+          const fs = require('fs');
+          
+          const apiIndex = {
+            name: 'CI/CD Symphony API',
+            version: '1.0.0',
+            description: 'API endpoints for CI/CD metrics, badges, and history',
+            generated: new Date().toISOString(),
+            endpoints: {
+              '/api/metrics': {
+                method: 'GET',
+                description: 'Get current metrics',
+                example: '/api/metrics.json'
+              },
+              '/api/history': {
+                method: 'GET', 
+                description: 'Get metrics history',
+                example: '/api/history.json'
+              },
+              '/api/badges/{type}': {
+                method: 'GET',
+                description: 'Get badge (SVG or JSON)',
+                types: ['performance', 'coverage', 'bundleSize', 'status'],
+                examples: ['/api/badges/performance.svg', '/api/badges/coverage.json']
+              }
+            },
+            cors: {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Methods': 'GET',
+              'Access-Control-Allow-Headers': 'Content-Type'
+            }
+          };
+          
+          fs.writeFileSync('api/index.json', JSON.stringify(apiIndex, null, 2));
+          "
+
+      - name: 🚀 Deploy API to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./api
+          destination_dir: api
+          keep_files: false
+          commit_message: '🔌 Update API endpoints [skip ci]'
+
+      - name: 📝 Update README with API info
+        run: |
+          # Create API documentation
+          cat >> API.md << 'EOF'
+          # 🔌 CI/CD Symphony API
+          
+          This repository automatically generates API endpoints for accessing CI/CD metrics.
+          
+          ## Base URL
+          
+          ```
+          https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/api/
+          ```
+          
+          ## Endpoints
+          
+          ### Get Current Metrics
+          ```
+          GET /api/metrics.json
+          ```
+          
+          Response:
+          ```json
+          {
+            "performance": 85,
+            "coverage": 78,
+            "bundleSize": 156789,
+            "timestamp": "2024-01-15T10:30:00.000Z",
+            "commit": "abc1234",
+            "branch": "main"
+          }
+          ```
+          
+          ### Get Metrics History
+          ```
+          GET /api/history.json
+          ```
+          
+          ### Get Badges
+          ```
+          GET /api/badges/performance.svg
+          GET /api/badges/coverage.svg
+          GET /api/badges/bundleSize.svg
+          GET /api/badges/status.svg
+          ```
+          
+          ### Get Badge Data
+          ```
+          GET /api/badges/performance.json
+          ```
+          
+          ## CORS
+          
+          All endpoints support CORS and can be accessed from any domain.
+          
+          ## Examples
+          
+          ### JavaScript
+          ```javascript
+          fetch('https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/api/metrics.json')
+            .then(response => response.json())
+            .then(data => console.log(data));
+          ```
+          
+          ### Embed Badge in Markdown
+          ```markdown
+          ![Performance](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/api/badges/performance.svg)
+          ```
+          EOF
+
+      - name: 💾 Commit API documentation
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add API.md
+          if git diff --staged --quiet; then
+            echo "No API documentation changes to commit"
+          else
+            git commit -m "📖 Update API documentation [skip ci]"
+            git push
+          fi
