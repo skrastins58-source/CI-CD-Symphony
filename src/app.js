@@ -138,8 +138,11 @@ class CICDSymphony {
         if (resultsEl) {
             resultsEl.innerHTML = `
                 <h3>✅ Analīze pabeigta</h3>
-                <pre>${JSON.stringify(results, null, 2)}</pre>
+                <pre id="analysis-json"></pre>
             `;
+            // Safe insertion of JSON string
+            const pre = document.getElementById('analysis-json');
+            if (pre) pre.textContent = JSON.stringify(results, null, 2);
         }
         this.updateMetricsDisplay(results);
     }
