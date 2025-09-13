@@ -137,9 +137,3 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
-
-# CI/CD Symphony specific
-badges/
-reports/
-baselines/
-api/
