@@ -28,7 +28,7 @@ async function build() {
       const buildContent = `// CI/CD Symphony - Built at ${new Date().toISOString()}
 // Version: ${packageJson.version}
 
-${fs.readFileSync('dist/main.js', 'utf8')}`;
+`;
 
       fs.writeFileSync('dist/main.js', buildContent);
     }
