@@ -133,6 +133,38 @@ fetch('https://<username>.github.io/<repository>/api/metrics.json')
 ![Performance](https://<username>.github.io/<repository>/api/badges/performance.svg)
 ```
 
+## 🗂️ CI/CD File Structure 
+
+### Coverage and Build Artifacts
+
+This project tracks key files in the repository to support the CI/CD pipeline:
+
+#### 📊 `coverage/coverage-summary.json`
+- **Purpose**: Contains test coverage metrics in JSON format (lines, statements, functions, branches)
+- **Role in CI/CD**: 
+  - Automatically generated during `npm run coverage`
+  - Used by GitHub Actions to validate coverage thresholds
+  - Provides data for coverage badges and PR comments
+  - Tracked in git to enable coverage trend analysis
+- **Example**: `{"total": {"lines": {"pct": 86.58}, "statements": {"pct": 89.32}}}`
+
+#### 📦 `dist/main.js`
+- **Purpose**: Production-ready bundled JavaScript output from webpack
+- **Role in CI/CD**:
+  - Created during `npm run build` 
+  - Used by Lighthouse for performance analysis
+  - Deployed to production environments
+  - Tracked in git for consistent deployments and debugging
+  - Enables bundle size monitoring and alerts
+
+#### 🎯 Why These Files Are Committed
+Unlike many projects that gitignore build artifacts, we commit these files because:
+1. **Reproducible Builds**: Ensures exact same bundle across environments
+2. **Performance Tracking**: Enables monitoring of bundle size trends over time
+3. **Quality Gates**: Allows automated validation of coverage thresholds
+4. **Debugging**: Makes it easier to identify when changes affect bundle or coverage
+5. **Baseline Comparison**: Supports delta analysis between branches
+
 ## 🔧 Configuration
 
 ### Lighthouse Configuration

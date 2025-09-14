@@ -1,0 +1,159 @@
+name: Coverage Threshold Validation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  validate-coverage:
+    name: Validate Coverage Thresholds
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests with coverage
+        run: npm run coverage
+        continue-on-error: true
+
+      - name: Validate Coverage Thresholds
+        id: coverage-check
+        run: |
+          # Read coverage summary
+          if [ -f "coverage/coverage-summary.json" ]; then
+            echo "✅ Coverage summary found"
+            
+            # Extract coverage percentages
+            LINES_PCT=$(node -p "JSON.parse(require('fs').readFileSync('coverage/coverage-summary.json')).total.lines.pct")
+            STATEMENTS_PCT=$(node -p "JSON.parse(require('fs').readFileSync('coverage/coverage-summary.json')).total.statements.pct")
+            FUNCTIONS_PCT=$(node -p "JSON.parse(require('fs').readFileSync('coverage/coverage-summary.json')).total.functions.pct")
+            BRANCHES_PCT=$(node -p "JSON.parse(require('fs').readFileSync('coverage/coverage-summary.json')).total.branches.pct")
+            
+            # Read thresholds from jest.config.js
+            THRESHOLD_LINES=$(node -p "require('./jest.config.js').coverageThreshold.global.lines")
+            THRESHOLD_STATEMENTS=$(node -p "require('./jest.config.js').coverageThreshold.global.statements")
+            THRESHOLD_FUNCTIONS=$(node -p "require('./jest.config.js').coverageThreshold.global.functions")
+            THRESHOLD_BRANCHES=$(node -p "require('./jest.config.js').coverageThreshold.global.branches")
+            
+            echo "📊 Coverage Results:"
+            echo "Lines: ${LINES_PCT}% (threshold: ${THRESHOLD_LINES}%)"
+            echo "Statements: ${STATEMENTS_PCT}% (threshold: ${THRESHOLD_STATEMENTS}%)"
+            echo "Functions: ${FUNCTIONS_PCT}% (threshold: ${THRESHOLD_FUNCTIONS}%)"
+            echo "Branches: ${BRANCHES_PCT}% (threshold: ${THRESHOLD_BRANCHES}%)"
+            
+            # Check if all thresholds are met
+            FAILED=false
+            
+            if (( $(echo "$LINES_PCT < $THRESHOLD_LINES" | bc -l) )); then
+              echo "❌ Lines coverage ($LINES_PCT%) below threshold ($THRESHOLD_LINES%)"
+              FAILED=true
+            fi
+            
+            if (( $(echo "$STATEMENTS_PCT < $THRESHOLD_STATEMENTS" | bc -l) )); then
+              echo "❌ Statements coverage ($STATEMENTS_PCT%) below threshold ($THRESHOLD_STATEMENTS%)"
+              FAILED=true
+            fi
+            
+            if (( $(echo "$FUNCTIONS_PCT < $THRESHOLD_FUNCTIONS" | bc -l) )); then
+              echo "❌ Functions coverage ($FUNCTIONS_PCT%) below threshold ($THRESHOLD_FUNCTIONS%)"
+              FAILED=true
+            fi
+            
+            if (( $(echo "$BRANCHES_PCT < $THRESHOLD_BRANCHES" | bc -l) )); then
+              echo "❌ Branches coverage ($BRANCHES_PCT%) below threshold ($THRESHOLD_BRANCHES%)"
+              FAILED=true
+            fi
+            
+            # Set outputs for PR comment
+            echo "lines_pct=${LINES_PCT}" >> $GITHUB_OUTPUT
+            echo "statements_pct=${STATEMENTS_PCT}" >> $GITHUB_OUTPUT
+            echo "functions_pct=${FUNCTIONS_PCT}" >> $GITHUB_OUTPUT
+            echo "branches_pct=${BRANCHES_PCT}" >> $GITHUB_OUTPUT
+            echo "threshold_lines=${THRESHOLD_LINES}" >> $GITHUB_OUTPUT
+            echo "threshold_statements=${THRESHOLD_STATEMENTS}" >> $GITHUB_OUTPUT
+            echo "threshold_functions=${THRESHOLD_FUNCTIONS}" >> $GITHUB_OUTPUT
+            echo "threshold_branches=${THRESHOLD_BRANCHES}" >> $GITHUB_OUTPUT
+            
+            if [ "$FAILED" = true ]; then
+              echo "validation_status=failed" >> $GITHUB_OUTPUT
+              echo "🚨 Coverage validation failed!"
+              exit 1
+            else
+              echo "validation_status=passed" >> $GITHUB_OUTPUT
+              echo "✅ All coverage thresholds met!"
+            fi
+          else
+            echo "❌ Coverage summary not found"
+            echo "validation_status=error" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Comment PR with Coverage Results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const status = '${{ steps.coverage-check.outputs.validation_status }}';
+            const linesPercent = '${{ steps.coverage-check.outputs.lines_pct }}';
+            const statementsPercent = '${{ steps.coverage-check.outputs.statements_pct }}';
+            const functionsPercent = '${{ steps.coverage-check.outputs.functions_pct }}';
+            const branchesPercent = '${{ steps.coverage-check.outputs.branches_pct }}';
+            
+            const thresholdLines = '${{ steps.coverage-check.outputs.threshold_lines }}';
+            const thresholdStatements = '${{ steps.coverage-check.outputs.threshold_statements }}';
+            const thresholdFunctions = '${{ steps.coverage-check.outputs.threshold_functions }}';
+            const thresholdBranches = '${{ steps.coverage-check.outputs.threshold_branches }}';
+            
+            const statusIcon = status === 'passed' ? '✅' : '❌';
+            const statusText = status === 'passed' ? 'PASSED' : 'FAILED';
+            
+            function getStatusIcon(current, threshold) {
+              return parseFloat(current) >= parseFloat(threshold) ? '✅' : '❌';
+            }
+            
+            const comment = `## ${statusIcon} Coverage Validation ${statusText}
+            
+            | Metric | Current | Threshold | Status |
+            |--------|---------|-----------|--------|
+            | Lines | ${linesPercent}% | ${thresholdLines}% | ${getStatusIcon(linesPercent, thresholdLines)} |
+            | Statements | ${statementsPercent}% | ${thresholdStatements}% | ${getStatusIcon(statementsPercent, thresholdStatements)} |
+            | Functions | ${functionsPercent}% | ${thresholdFunctions}% | ${getStatusIcon(functionsPercent, thresholdFunctions)} |
+            | Branches | ${branchesPercent}% | ${thresholdBranches}% | ${getStatusIcon(branchesPercent, thresholdBranches)} |
+            
+            ${status === 'passed' 
+              ? '🎉 All coverage thresholds have been met! Great job maintaining code quality.' 
+              : '⚠️ Some coverage thresholds are not met. Please add more tests to improve coverage.'}
+            
+            ---
+            *Generated by Coverage Validation Workflow*`;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+      - name: Upload Coverage Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 30
