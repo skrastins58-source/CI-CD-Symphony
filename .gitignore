@@ -19,7 +19,9 @@ pids
 lib-cov
 
 # Coverage directory used by tools like istanbul
+# NOTE: coverage-summary.json is tracked for CI/CD pipeline metrics
 coverage
+!coverage/coverage-summary.json
 *.lcov
 
 # nyc test coverage
@@ -80,7 +82,8 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist
+# NOTE: dist directory is tracked for CI/CD pipeline (build artifacts, performance analysis)
+# dist
 
 # Gatsby files
 .cache/
