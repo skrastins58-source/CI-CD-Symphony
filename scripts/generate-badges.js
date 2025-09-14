@@ -119,7 +119,9 @@ ${badges.seo ? `![SEO](${badges.seo})` : ''}
     fs.writeFileSync('badges/README-badges.md', badgeMarkdown.trim());
 
     // Output for GitHub Actions
-    console.log(`::set-output name=badges::${JSON.stringify(badges)}`);
+    if (process.env.GITHUB_OUTPUT) {
+      fs.appendFileSync(process.env.GITHUB_OUTPUT, `badges=${JSON.stringify(badges)}\n`);
+    }
     
     console.log('✅ Badges generated successfully');
     Object.entries(badges).forEach(([key, url]) => {
