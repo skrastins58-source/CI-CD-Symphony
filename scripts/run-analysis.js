@@ -112,7 +112,7 @@ class AnalysisRunner {
         console.log('🛡️ Palaidz coverage analīzi...');
         
         try {
-            execSync('npm run test:coverage', { stdio: 'inherit' });
+            execSync('npm run coverage', { stdio: 'inherit' });
             
             // Read coverage results
             const coveragePath = path.join(__dirname, '../coverage/coverage-summary.json');
