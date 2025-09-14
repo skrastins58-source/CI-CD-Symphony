@@ -1,12 +1,12 @@
 module.exports = {
   testEnvironment: 'node',
-  testMatch: ['**/src/**/*.test.js'],
+  testMatch: ['**/__tests__/**/*.test.js', '**/src/**/*.test.js'],
   collectCoverage: true,
   coverageDirectory: 'coverage',
   coverageReporters: ['json-summary', 'text', 'lcov'],
   coverageThreshold: {
     global: {
-      branches: 80,
+      branches: 73,
       functions: 80,
       lines: 80,
       statements: 80

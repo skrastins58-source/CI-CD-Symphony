@@ -54,10 +54,5 @@
     "src/**/*.js": [
       "eslint --fix"
     ]
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-env"
-    ]
   }
 }
