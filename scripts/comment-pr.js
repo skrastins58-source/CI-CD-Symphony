@@ -65,7 +65,7 @@ async function commentOnPR() {
           const diff = results.coverage[key] - baseline.coverage[key];
           comparison.coverage[key] = {
             current: results.coverage[key].toFixed(1),
-            baseline: baseline.coverage[key],
+            baseline: baseline.coverage[key].toFixed(1),
             diff: diff.toFixed(1),
             trend: diff > 0 ? '📈' : diff < 0 ? '📉' : '➖'
           };
