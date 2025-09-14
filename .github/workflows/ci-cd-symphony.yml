@@ -48,6 +48,21 @@ jobs:
           name: dist
           path: dist/
 
+      - name: 📊 Run analysis
+        id: analysis
+        run: node scripts/run-analysis.js
+
+      - name: 📜 Generate history.json
+        run: node scripts/generate-history.js
+
+      - name: 🔍 Compare coverage
+        if: github.event_name == 'pull_request'
+        run: npm run ci:compare-coverage
+
+      - name: 🏷️ Generate badges
+        id: badges
+        run: node scripts/generate-badges.js
+
   security:
     name: Security Scan
     runs-on: ubuntu-latest
@@ -97,4 +112,32 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: npx semantic-release
-curl -X POST -H 'Content-type: application/json' --data '{"text":"Hello, World!"}' https://hooks.slack.com/services/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
+
+  notify:
+    name: Notify
+    runs-on: ubuntu-latest
+    needs: analysis
+    if: always() && (needs.analysis.result == 'success' || needs.analysis.result == 'failure')
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: 💬 Send Slack notification
+        if: secrets.SLACK_WEBHOOK_URL != ''
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          JOB_STATUS: ${{ needs.analysis.result }}
+          SLACK_CHANNEL: ${{ vars.SLACK_CHANNEL || '#ci-cd' }}
+          SLACK_USERNAME: 'CI/CD Symphony'
+          SLACK_ICON: ':musical_note:'
+        run: node scripts/send-notification.js

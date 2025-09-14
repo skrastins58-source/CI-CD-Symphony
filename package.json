@@ -4,7 +4,7 @@
   "description": "Fully automated CI/CD pipeline with delta analysis, status badges, documentation generation, Slack notifications, security scanning, and baseline updates.",
   "main": "src/app.js",
   "scripts": {
-    "start": "node src/app.js",
+    "start": "npm run build && serve dist",
     "build": "webpack --mode=production",
     "test": "jest",
     "coverage": "jest --coverage",
@@ -53,11 +53,6 @@
   "lint-staged": {
     "src/**/*.js": [
       "eslint --fix"
-    ]
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-env"
     ]
   }
 }

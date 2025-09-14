@@ -64,6 +64,13 @@
             background: rgba(255, 255, 255, 0.3);
             transform: translateY(-2px);
         }
+        .chart-container {
+            margin-top: 40px;
+        }
+        canvas {
+            max-width: 100%;
+            height: auto !important;
+        }
     </style>
 </head>
 <body>
@@ -100,6 +107,62 @@
         <button onclick="exportData()">📥 Eksportēt Datus</button>
         
         <div id="results" style="margin-top: 30px;"></div>
+
+        <div class="chart-container">
+            <h3>Coverage Trend</h3>
+            <canvas id="coverageTrend"></canvas>
+        </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('history.json')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(historyArr => {
+                    if (!Array.isArray(historyArr)) {
+                        throw new Error('History data is not an array');
+                    }
+                    const coverageTrend = historyArr.map(e => ({
+                        date: e.date,
+                        coverage: e.coverage
+                    }));
+
+                    new Chart(document.getElementById('coverageTrend'), {
+                        type: 'line',
+                        data: {
+                            labels: coverageTrend.map(e => e.date),
+                            datasets: [{
+                                label: 'Coverage (%)',
+                                data: coverageTrend.map(e => e.coverage),
+                                borderColor: '#28a745',
+                                fill: false
+                            }]
+                        },
+                        options: {
+                            plugins: {
+                                legend: { position: 'bottom' }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    max: 100
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching or processing history.json:', error);
+                    const chartContainer = document.getElementById('coverageTrend').parentElement;
+                    chartContainer.innerHTML = '<p>Could not load coverage trend data.</p>';
+                });
+        });
+    </script>
 </body>
 </html>

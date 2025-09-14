@@ -1,7 +1,65 @@
+# 🎼 CI/CD Symphony
 
-# CI/CD-Symphony 🎼
+This project is a demonstration of a fully automated CI/CD pipeline using GitHub Actions. It includes jobs for metrics analysis, security scanning, Slack notifications, baseline updates, and preview deployments.
 
-Pilnībā automatizēta CI/CD plūsma ar delta analīzi, statusa badge, dokumentācijas ģenerēšanu, Slack notifikācijām, drošības skenēšanu un baselineatjaunošanu. Ideāli piemērots modernām komandām, kas vēlas redzamu, uzturamu un iedvesmojošu DevOps kultūru.
+## 🚀 CI/CD Workflow
+
+The pipeline is orchestrated by the `.github/workflows/ci-cd-symphony.yml` file and is split into two main flows:
+
+### 1. Pull Request Flow
+
+This flow runs whenever a pull request is created or updated. It focuses on validation, analysis, and providing a preview environment.
+
+```mermaid
+graph TD
+    subgraph "Pull Request Flow"
+        Start[PR Created/Updated] --> Analysis[📊 Metrics Analysis];
+        Start --> Security[🔒 Security Scan];
+        
+        Analysis --> Notify[💬 Slack Notification];
+        Analysis --> Preview[🚀 Deploy Preview];
+        
+        Preview --> Comment[Add PR Comment with Preview URL];
+    end
+```
+
+### 2. Main Branch Flow
+
+This flow runs when changes are pushed to the `main` branch (e.g., after a pull request is merged). It focuses on updating the baseline metrics with the latest data from the `main` branch.
+
+```mermaid
+graph TD
+    subgraph "Push to main Flow"
+        Start[Push to main] --> Analysis[📊 Metrics Analysis];
+        Start --> Security[🔒 Security Scan];
+        
+        Analysis --> Notify[💬 Slack Notification];
+        Analysis --> Baseline[🎯 Update Baseline];
+        
+        Baseline --> Commit[Commit & Push Baseline Changes];
+    end
+```
+
+## 🧑‍💻 Local Development
+
+To get started with local development, follow these steps:
+
+1.  **Install Dependencies**:
+    ```bash
+    npm install
+    ```
+
+2.  **Run the Application**:
+    ```bash
+    npm start
+    ```
+    This will build the project and serve it on a local web server (usually `http://localhost:3000`).
+
+3.  **Run Tests**:
+    ```bash
+    npm test
+    ```
+    To run tests with coverage, use `npm run coverage`.
 
 ## 📊 Current Metrics
 
@@ -277,10 +335,4 @@ Because great CI/CD is like a well-orchestrated symphony - every instrument (too
 ---
 
 *Generated with ❤️ by CI/CD Symphony*
-=======
-# CI-CD-Symphony
-
-Pilnībā automatizēta CI/CD plūsma ar delta analīzi, statusa badge, dokumentācijas ģenerēšanu, Slack notifikācijām, drošības skenēšanu un baseline atjaunošanu. Ideāli piemērots modernām komandām, kas vēlas redzamu, uzturamu un iedvesmojošu DevOps kultūru.
-![Coverage](https://janis.github.io/CI-CD-Symphony/badges/coverage.svg)
-![Build](https://janis.github.io/CI-CD-Symphony/badges/build.svg)
 
