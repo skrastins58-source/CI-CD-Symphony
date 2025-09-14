@@ -66,8 +66,10 @@ async function runAnalysis() {
     // Save results
     fs.writeFileSync('reports/analysis-results.json', JSON.stringify(results, null, 2));
     
-    // Output for GitHub Actions
-    console.log(`::set-output name=results::${JSON.stringify(results)}`);
+    // Output for GitHub Actions (use $GITHUB_OUTPUT file if available)
+    if (process.env.GITHUB_OUTPUT) {
+      fs.appendFileSync(process.env.GITHUB_OUTPUT, `results=${JSON.stringify(results)}\n`);
+    }
     
     console.log('✅ Analysis completed successfully');
     console.log(`📊 Lighthouse Performance: ${results.lighthouse.performance}`);
