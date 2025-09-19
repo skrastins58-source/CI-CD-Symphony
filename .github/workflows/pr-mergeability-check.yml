@@ -1,0 +1,32 @@
+name: PR mergeability check
+
+on:
+  workflow_dispatch:  # Manuāla palaišana
+  schedule:
+    - cron: '0 7 * * *'  # Automātiski katru dienu plkst. 7:00 UTC
+
+jobs:
+  check-prs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Install GitHub CLI and jq
+        run: |
+          sudo apt update
+          sudo apt install gh jq -y
+
+      - name: Run PR check and label script
+        run: |
+          chmod +x scripts/check_and_label_prs.sh
+          ./scripts/check_and_label_prs.sh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload PR status table
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-status-table
+          path: pr-status-table.md
