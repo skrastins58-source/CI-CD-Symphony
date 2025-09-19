@@ -18,10 +18,13 @@ jobs:
           sudo apt update
           sudo apt install gh jq -y
 
-      - name: Authenticate GitHub CLI
+      - name: Run PR check and label script
+        run: |
+          chmod +x scripts/check_and_label_prs.sh
+          ./scripts/check_and_label_prs.sh
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: echo "$GH_TOKEN" | gh auth login --with-token
+
 
       - name: Run PR check and label script
         run: |
