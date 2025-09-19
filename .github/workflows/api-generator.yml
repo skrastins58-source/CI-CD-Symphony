@@ -1,9 +1,7 @@
 permissions:
   contents: write
-.
-  name: Push to gh-pages
-  run: git push origin gh-pages
-  env:
+name: Push to gh-pages
+run: git push origin gh-pages
 GH_PAT: ${{ secrets.GITHUB_TOKEN }}
 
 name: 🔌 API Generator
