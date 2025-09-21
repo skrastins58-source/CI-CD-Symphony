@@ -77,11 +77,13 @@ function updateBaseline() {
 }
 
 function calculateTrend(previous, current) {
-  if (!previous || !current) return 'stable';
-  
+  if (previous == null || current == null) return 'stable';
+  if (previous === 0) {
+    if (current === 0) return 'stable';
+    return current > 0 ? 'up' : 'down';
+  }
   const diff = current - previous;
   const percentChange = Math.abs(diff / previous) * 100;
-  
   if (percentChange < 2) return 'stable';
   return diff > 0 ? 'up' : 'down';
 }
