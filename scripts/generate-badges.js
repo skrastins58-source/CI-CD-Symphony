@@ -80,7 +80,7 @@ function generateBadges() {
   if (process.env.GITHUB_OUTPUT) {
     if (process.env.GITHUB_OUTPUT) {
       const fs = require('fs');
-      fs.appendFileSync(process.env.GITHUB_OUTPUT, EOF\n${JSON.stringify(badgeData)}\nEOF\n`);
+      fs.appendFileSync(process.env.GITHUB_OUTPUT, {{EOF\n${JSON.stringify(badgeData)}\nEOF\n`);
     }
     
     return badgeData;
@@ -94,4 +94,4 @@ if (require.main === module) {
   generateBadges();
 }
 
-module.exports = { generateBadges };
+module.exports == { generateBadges };
