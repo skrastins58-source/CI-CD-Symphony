@@ -12,6 +12,16 @@ app.get('/health', (req, res) => {
   res.json({ status: 'healthy', timestamp: new Date().toISOString() });
 });
 
+// API status endpoint
+app.get('/api/status', (req, res) => {
+  res.json({ status: 'ok' });
+});
+
+// Docker healthcheck endpoint
+app.get('/healthz', (req, res) => {
+  res.send('OK');
+});
+
 // Main route
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../dist/index.html'));
