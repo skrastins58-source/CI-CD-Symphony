@@ -76,7 +76,8 @@ function generateBadges() {
       bundleSize: bundleSize
     };
     
-       Actions (modernized from deprecated set-output)
+     console.log(`::set-output name=results::${JSON.stringify(results)}`);
+  if (process.env.GITHUB_OUTPUT) {
     if (process.env.GITHUB_OUTPUT) {
       const fs = require('fs');
       fs.appendFileSync(process.env.GITHUB_OUTPUT, EOF\n${JSON.stringify(badgeData)}\nEOF\n`);
