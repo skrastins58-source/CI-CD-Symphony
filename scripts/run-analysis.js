@@ -132,8 +132,11 @@ async function runAnalysis() {
   
   console.log('🎉 Analysis completed successfully!');
   
-  // Output for GitHub Actions
-  console.log(`::set-output name=results::${JSON.stringify(results)}`);
+  // Output for GitHub Actions (modernized from deprecated set-output)
+  if (process.env.GITHUB_OUTPUT) {
+    const fs = require('fs');
+    fs.appendFileSync(process.env.GITHUB_OUTPUT, `results<<EOF\n${JSON.stringify(results)}\nEOF\n`);
+  }
 }
 
 if (require.main === module) {

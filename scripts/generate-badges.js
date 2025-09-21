@@ -83,8 +83,11 @@ function generateBadges() {
       bundleSize: bundleSize
     };
     
-    // Output for GitHub Actions
-    console.log(`::set-output name=badges::${JSON.stringify(badgeData)}`);
+    // Output for GitHub Actions (modernized from deprecated set-output)
+    if (process.env.GITHUB_OUTPUT) {
+      const fs = require('fs');
+      fs.appendFileSync(process.env.GITHUB_OUTPUT, `badges<<EOF\n${JSON.stringify(badgeData)}\nEOF\n`);
+    }
     
     return badgeData;
   } catch (error) {
