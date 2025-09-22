@@ -94,4 +94,4 @@ if (require.main === module) {
   generateBadges();
 }
 
-module.exports == { generateBadges };
+module.exports = { generateBadges };
