@@ -53,7 +53,7 @@ CI/CD Symphony is a comprehensive automated CI/CD pipeline template with metrics
    node scripts/update-baseline.js  # ~1 second
    ```
 
-## 📁 Key Project Structure
+##  Key Project Structure
 
 ### Critical Files (Required by CI/CD workflow)
 - `.github/workflows/ci-cd-symphony.yml` - Main CI/CD pipeline
@@ -79,7 +79,7 @@ CI/CD Symphony is a comprehensive automated CI/CD pipeline template with metrics
 - `baselines/` - Metric baseline tracking (tracked in git)
 - `coverage/` - Jest coverage reports (ignored)
 
-## ⚡ Build and Development
+##  Build and Development
 
 ### Development Server
 ```bash
@@ -98,7 +98,7 @@ npm start           # Start Express server
 - `jest.config.js` - Test configuration with coverage thresholds
 - `.eslintrc.js` - Linting rules (browser + node + jest environments)
 
-## 🎼 CI/CD Workflow Understanding
+## CI/CD Workflow Understanding
 
 ### Workflow Jobs (from `.github/workflows/ci-cd-symphony.yml`)
 1. **analysis** - Runs `npm ci`, `npm test`, analysis scripts
@@ -112,7 +112,7 @@ npm start           # Start Express server
 - `SNYK_TOKEN` (optional) - For security scanning
 - `GITHUB_TOKEN` (provided automatically)
 
-## ✅ Pre-Commit Checklist
+## Pre-Commit Checklist
 **ALWAYS run these before pushing changes:**
 
 1. `npm run lint` - Must pass cleanly
@@ -121,7 +121,7 @@ npm start           # Start Express server
 4. Test server manually: `npm run server` then `curl http://localhost:3000/health`
 5. Test analysis scripts: `node scripts/run-analysis.js`
 
-## 🚨 Critical Timing Information
+## Critical Timing Information
 
 ### Command Timeouts (NEVER CANCEL these operations)
 - `npm install`: 60-90 seconds (normal for fresh install)
@@ -146,7 +146,7 @@ npm start           # Start Express server
 
 ### Working with Analysis Scripts
 - All scripts output JSON to `reports/` directory
-- Scripts generate GitHub Actions outputs with `::set-output`
+- Scripts generate GitHub Actions outputs with modern `$GITHUB_OUTPUT` format
 - Badge generation creates SVG files in `badges/`
 - Baseline updates track metric trends over time
 
@@ -179,3 +179,175 @@ npm start           # Start Express server
 - Test scripts individually before relying on CI workflow
 
 This project is designed for maximum automation and minimal manual intervention. Always validate changes thoroughly before committing as the CI pipeline expects all components to work together seamlessly.
+
+## CI Modernizācija: set-output → GITHUB_OUTPUT
+
+This section provides guidance for modernizing GitHub Actions workflows from deprecated `set-output` syntax to the modern `$GITHUB_OUTPUT` environment file approach.
+
+### Deprecated vs Modern Syntax
+
+#### ❌ Deprecated (Security Risk - Removed)
+```bash
+echo "::set-output name=result::$value"
+echo "::set-output name=matrix::$json_data"
+```
+
+#### ✅ Modern (Secure Environment File)
+```bash
+echo "result=$value" >> $GITHUB_OUTPUT
+echo "matrix<<EOF" >> $GITHUB_OUTPUT
+echo "$json_data" >> $GITHUB_OUTPUT  
+echo "EOF" >> $GITHUB_OUTPUT
+```
+
+### Language-Specific Examples
+
+#### JavaScript/Node.js
+```javascript
+// Modern approach for CI/CD scripts
+if (process.env.GITHUB_OUTPUT) {
+  const fs = require('fs');
+  
+  // Simple string output
+  fs.appendFileSync(process.env.GITHUB_OUTPUT, `status=success\n`);
+  
+  // JSON output with heredoc syntax
+  const jsonData = JSON.stringify(results);
+  fs.appendFileSync(process.env.GITHUB_OUTPUT, `results<<EOF\n${jsonData}\nEOF\n`);
+  
+  // Multiple outputs
+  fs.appendFileSync(process.env.GITHUB_OUTPUT, [
+    `coverage=${coverage}%`,
+    `bundle_size=${bundleSize}`,
+    `performance_score=${performanceScore}`
+  ].join('\n') + '\n');
+}
+```
+
+#### Bash/Shell Scripts
+```bash
+#!/bin/bash
+
+# Simple value output
+echo "status=success" >> $GITHUB_OUTPUT
+
+# Multiline content with heredoc
+cat >> $GITHUB_OUTPUT << EOF
+results<<EOL
+{
+  "coverage": ${COVERAGE},
+  "build": "success",
+  "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+}
+EOL
+EOF
+
+# Conditional output
+if [ "$BUILD_SUCCESS" = "true" ]; then
+    echo "build_status=✅ Success" >> $GITHUB_OUTPUT
+else
+    echo "build_status=❌ Failed" >> $GITHUB_OUTPUT
+fi
+```
+
+#### PowerShell
+```powershell
+# Simple string output
+"status=success" | Add-Content -Path $env:GITHUB_OUTPUT
+
+# JSON output with proper escaping
+$jsonData = @{
+    coverage = $coveragePercent
+    build = "success"
+    timestamp = Get-Date -Format "yyyy-MM-ddTHH:mm:ssZ"
+} | ConvertTo-Json -Compress
+
+@"
+results<<EOF
+$jsonData
+EOF
+"@ | Add-Content -Path $env:GITHUB_OUTPUT
+
+# Multiple values
+@(
+    "coverage=$coveragePercent%",
+    "bundle_size=$bundleSize",
+    "performance_score=$performanceScore"
+) | Add-Content -Path $env:GITHUB_OUTPUT
+```
+
+### Migration Checklist
+
+#### For Contributors:
+- [ ] **Search for deprecated syntax**: `grep -r "::set-output" .github/ scripts/`
+- [ ] **Replace with environment file syntax** using `$GITHUB_OUTPUT`
+- [ ] **Use heredoc format** for JSON and multiline content
+- [ ] **Test locally** with `GITHUB_OUTPUT=/tmp/test_output` environment variable
+- [ ] **Validate workflow outputs** are properly consumed by dependent jobs
+
+#### For CI/CD Scripts:
+- [ ] **Check environment variable exists**: `if (process.env.GITHUB_OUTPUT)`
+- [ ] **Use append mode**: `fs.appendFileSync()` to avoid overwriting
+- [ ] **Properly format heredoc**: Use `<<EOF\n...\nEOF\n` for multiline content
+- [ ] **Escape special characters** in output values if needed
+- [ ] **Add error handling** for file write operations
+
+### Testing and Validation
+
+#### Local Testing:
+```bash
+# Create temporary output file
+export GITHUB_OUTPUT=/tmp/github_output
+
+# Run your script
+node scripts/run-analysis.js
+
+# Check the output
+cat $GITHUB_OUTPUT
+
+# Expected format:
+# results<<EOF
+# {"coverage":85,"build":"success"}
+# EOF
+```
+
+#### CI/CD Workflow Testing:
+```yaml
+steps:
+  - name: Run Analysis
+    id: analysis
+    run: node scripts/run-analysis.js
+    
+  - name: Use Outputs
+    run: |
+      echo "Coverage: ${{ steps.analysis.outputs.results }}"
+      echo "Results available: ${{ steps.analysis.outputs.results != '' }}"
+```
+
+### Security Benefits
+
+The modern `$GITHUB_OUTPUT` approach provides:
+- **Injection Protection**: No command interpretation of output values
+- **Proper Escaping**: Heredoc syntax prevents value corruption  
+- **Audit Trail**: File-based outputs are easier to inspect and debug
+- **Standardization**: Consistent across all GitHub Actions workflows
+
+### Troubleshooting
+
+#### Common Issues:
+1. **Missing EOF delimiter**: Ensure heredoc syntax is complete
+2. **File permissions**: `$GITHUB_OUTPUT` file must be writable
+3. **Content overwriting**: Always use append mode (`>>` or `appendFileSync`)
+4. **JSON formatting**: Validate JSON before writing to output
+
+#### Debug Commands:
+```bash
+# Check if GITHUB_OUTPUT is set
+echo "GITHUB_OUTPUT: ${GITHUB_OUTPUT:-'Not set'}"
+
+# View current outputs
+cat "$GITHUB_OUTPUT" 2>/dev/null || echo "No output file found"
+
+# Validate JSON output
+jq empty "$GITHUB_OUTPUT" 2>/dev/null && echo "Valid JSON" || echo "Invalid JSON"
+```

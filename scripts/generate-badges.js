@@ -5,14 +5,12 @@ const path = require('path');
 
 console.log('🏷️ Generating status badges...');
 
-// Create badges directory
 const badgesDir = path.join(__dirname, '../badges');
 if (!fs.existsSync(badgesDir)) {
   fs.mkdirSync(badgesDir, { recursive: true });
 }
 
 function generateBadge(label, message, color) {
-  // Simple SVG badge generator
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="104" height="20">
     <linearGradient id="b" x2="0" y2="100%">
       <stop offset="0" stop-color="#bbb" stop-opacity=".1"/>
@@ -47,7 +45,6 @@ function getColorForScore(score) {
 
 function generateBadges() {
   try {
-    // Read analysis results
     const resultsPath = path.join(__dirname, '../reports/analysis-results.json');
     let results = {};
     
@@ -55,21 +52,17 @@ function generateBadges() {
       results = JSON.parse(fs.readFileSync(resultsPath, 'utf8'));
     }
     
-    // Build status badge
     const buildBadge = generateBadge('build', 'passing', '#4c1');
     fs.writeFileSync(path.join(badgesDir, 'build.svg'), buildBadge);
     
-    // Coverage badge
     const coveragePct = results.coverage?.total?.lines?.pct || 85;
     const coverageBadge = generateBadge('coverage', `${coveragePct}%`, getColorForScore(coveragePct));
     fs.writeFileSync(path.join(badgesDir, 'coverage.svg'), coverageBadge);
     
-    // Performance badge
     const perfScore = results.performance?.scores?.performance || 85;
     const perfBadge = generateBadge('performance', `${perfScore}`, getColorForScore(perfScore));
     fs.writeFileSync(path.join(badgesDir, 'performance.svg'), perfBadge);
     
-    // Bundle size badge
     const bundleSize = results.bundleSize?.sizeFormatted || '< 50 KB';
     const bundleBadge = generateBadge('size', bundleSize, '#4c1');
     fs.writeFileSync(path.join(badgesDir, 'bundle-size.svg'), bundleBadge);
@@ -83,8 +76,12 @@ function generateBadges() {
       bundleSize: bundleSize
     };
     
-    // Output for GitHub Actions
-    console.log(`::set-output name=badges::${JSON.stringify(badgeData)}`);
+     console.log(`::set-output name=results::${JSON.stringify(results)}`);
+  if (process.env.GITHUB_OUTPUT) {
+    if (process.env.GITHUB_OUTPUT) {
+      const fs = require('fs');
+      fs.appendFileSync(process.env.GITHUB_OUTPUT, {{EOF\n${JSON.stringify(badgeData)}\nEOF\n`);
+    }
     
     return badgeData;
   } catch (error) {
