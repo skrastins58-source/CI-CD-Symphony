@@ -53,7 +53,7 @@ CI/CD Symphony is a comprehensive automated CI/CD pipeline template with metrics
    node scripts/update-baseline.js  # ~1 second
    ```
 
-## 📁 Key Project Structure
+##  Key Project Structure
 
 ### Critical Files (Required by CI/CD workflow)
 - `.github/workflows/ci-cd-symphony.yml` - Main CI/CD pipeline
@@ -79,7 +79,7 @@ CI/CD Symphony is a comprehensive automated CI/CD pipeline template with metrics
 - `baselines/` - Metric baseline tracking (tracked in git)
 - `coverage/` - Jest coverage reports (ignored)
 
-## ⚡ Build and Development
+##  Build and Development
 
 ### Development Server
 ```bash
@@ -98,7 +98,7 @@ npm start           # Start Express server
 - `jest.config.js` - Test configuration with coverage thresholds
 - `.eslintrc.js` - Linting rules (browser + node + jest environments)
 
-## 🎼 CI/CD Workflow Understanding
+## CI/CD Workflow Understanding
 
 ### Workflow Jobs (from `.github/workflows/ci-cd-symphony.yml`)
 1. **analysis** - Runs `npm ci`, `npm test`, analysis scripts
@@ -112,7 +112,7 @@ npm start           # Start Express server
 - `SNYK_TOKEN` (optional) - For security scanning
 - `GITHUB_TOKEN` (provided automatically)
 
-## ✅ Pre-Commit Checklist
+## Pre-Commit Checklist
 **ALWAYS run these before pushing changes:**
 
 1. `npm run lint` - Must pass cleanly
@@ -121,7 +121,7 @@ npm start           # Start Express server
 4. Test server manually: `npm run server` then `curl http://localhost:3000/health`
 5. Test analysis scripts: `node scripts/run-analysis.js`
 
-## 🚨 Critical Timing Information
+## Critical Timing Information
 
 ### Command Timeouts (NEVER CANCEL these operations)
 - `npm install`: 60-90 seconds (normal for fresh install)
@@ -180,7 +180,7 @@ npm start           # Start Express server
 
 This project is designed for maximum automation and minimal manual intervention. Always validate changes thoroughly before committing as the CI pipeline expects all components to work together seamlessly.
 
-## 🔧 CI Modernizācija: set-output → GITHUB_OUTPUT
+## CI Modernizācija: set-output → GITHUB_OUTPUT
 
 This section provides guidance for modernizing GitHub Actions workflows from deprecated `set-output` syntax to the modern `$GITHUB_OUTPUT` environment file approach.
 
