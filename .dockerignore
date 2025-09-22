@@ -30,8 +30,6 @@ README.md
 docs
 
 # Testing / Testēšana
-__tests__
-*.test.js
 
 # Logs / Žurnāli
 logs
