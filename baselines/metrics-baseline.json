@@ -1,0 +1,33 @@
+{
+  "lastUpdated": "2025-09-21T20:38:44.814Z",
+  "bundleSize": {
+    "current": 0,
+    "trend": "stable",
+    "history": [
+      {
+        "value": 0,
+        "timestamp": "2025-09-21T20:38:44.814Z"
+      }
+    ]
+  },
+  "performance": {
+    "current": 97,
+    "trend": "stable",
+    "history": [
+      {
+        "value": 97,
+        "timestamp": "2025-09-21T20:38:44.814Z"
+      }
+    ]
+  },
+  "coverage": {
+    "current": 85,
+    "trend": "stable",
+    "history": [
+      {
+        "value": 85,
+        "timestamp": "2025-09-21T20:38:44.814Z"
+      }
+    ]
+  }
+}
