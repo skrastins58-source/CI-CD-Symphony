@@ -24,6 +24,11 @@ jobs:
           node-version: '18'
           cache: 'npm'
 
+      # Izveidot Docker attēlu, lai pārbaudītu, vai Docker konfigurācija ir pareiza
+      # Build Docker image to verify Docker configuration is correct
+      - name: 🐳 Build Docker Image
+        run: docker build -t ci-cd-symphony:${{ github.sha }} .
+
       - name: Install dependencies
         run: npm ci
 

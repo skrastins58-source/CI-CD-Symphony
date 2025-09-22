@@ -1,0 +1,66 @@
+# Node.js
+node_modules
+npm-debug.log*
+
+# Build artifacts / Build artifacts - veidojamie faili
+dist
+coverage
+reports
+
+# Development files / Izstrādes faili
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE and editor files / IDE un redaktoru faili
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# Git
+.git
+.gitignore
+
+# Documentation / Dokumentācija
+README.md
+docs
+
+# Testing / Testēšana
+__tests__
+*.test.js
+
+# Logs / Žurnāli
+logs
+*.log
+
+# Runtime data / Izpildlaika dati
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# OS generated files / Operētājsistēmas ģenerētie faili
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files / Pagaidu faili
+tmp
+temp
+.tmp
+
+# Docker files / Docker faili
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# CI/CD files / CI/CD faili
+.github
