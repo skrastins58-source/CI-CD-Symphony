@@ -1,0 +1,17 @@
+# Dockerfile.node — multi-stage for Node build and minimal runtime (non-root)
+FROM node:18-slim AS builder
+WORKDIR /usr/src/app
+COPY package*.json ./
+RUN npm ci --no-audit --no-fund
+COPY . .
+RUN npm run build
+
+# Runtime image
+FROM node:18-slim
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+WORKDIR /usr/src/app
+COPY --from=builder --chown=appuser:appuser /usr/src/app/build ./build
+USER appuser
+EXPOSE 3000
+# Adjust start command to your runtime (e.g., serve static or node server)
+CMD ["npm", "run", "start"]
