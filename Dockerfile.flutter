@@ -1,0 +1,23 @@
+# Dockerfile.flutter — multi-stage build: build Flutter web, serve with nginx (small runtime)
+FROM ubuntu:22.04 AS builder
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  curl git unzip xz-utils ca-certificates build-essential wget \
+  && rm -rf /var/lib/apt/lists/*
+
+# Install Flutter (shallow clone for speed)
+RUN git clone --depth 1 https://github.com/flutter/flutter.git /flutter
+ENV PATH="/flutter/bin:/flutter/bin/cache/dart-sdk/bin:${PATH}"
+
+WORKDIR /app
+COPY . /app
+
+# Pre-cache and build web release
+RUN flutter config --enable-web \
+  && flutter pub get \
+  && flutter build web --release
+
+# Runtime: Alpine nginx serving built web
+FROM nginx:stable-alpine AS runtime
+COPY --from=builder /app/build/web/ /usr/share/nginx/html/
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

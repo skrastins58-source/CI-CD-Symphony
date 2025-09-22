@@ -1,0 +1,37 @@
+# Exclude common artifacts from Docker context to keep build lightweight
+node_modules
+npm-debug.log*
+yarn-error.log*
+
+# Build artifacts and caches
+build
+dist
+coverage
+.dart_tool
+.pub-cache
+.packages
+
+# OS and editor files
+.DS_Store
+.vscode
+.idea
+*.swp
+*~ 
+
+# Git and CI
+.git
+.github
+.gitignore
+
+# Logs and temp
+logs
+*.log
+tmp
+temp
+
+# Docker files
+Dockerfile*
+docker-compose*
+
+# Docs / local assets not needed in image
+docs
