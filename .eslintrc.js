@@ -5,7 +5,9 @@ module.exports = {
     jest: true,
     browser: true
   },
-  extends: ['eslint:recommended'],
+  extends: [
+    'eslint:recommended'
+  ],
   parserOptions: {
     ecmaVersion: 12,
     sourceType: 'module'

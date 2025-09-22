@@ -6,11 +6,13 @@ const { execSync } = require('child_process');
 
 console.log('🔍 Running comprehensive analysis...');
 
+// Create reports directory
 const reportsDir = path.join(__dirname, '../reports');
 if (!fs.existsSync(reportsDir)) {
   fs.mkdirSync(reportsDir, { recursive: true });
 }
 
+// Bundle size analysis
 function analyzeBundleSize() {
   console.log('📦 Analyzing bundle size...');
   
@@ -70,12 +72,15 @@ function analyzePerformance() {
   return performanceReport;
 }
 
+// Coverage analysis
 function analyzeCoverage() {
   console.log('🧪 Analyzing test coverage...');
   
   try {
+    // Run tests with coverage
     execSync('npm test -- --coverage --coverageReporters=json', { stdio: 'inherit' });
     
+    // Check if coverage file exists
     const coveragePath = path.join(__dirname, '../coverage/coverage-summary.json');
     if (fs.existsSync(coveragePath)) {
       const coverage = JSON.parse(fs.readFileSync(coveragePath, 'utf8'));
@@ -92,6 +97,7 @@ function analyzeCoverage() {
     console.error('❌ Coverage analysis failed:', error.message);
   }
   
+  // Fallback mock coverage
   const mockCoverage = {
     total: {
       lines: { pct: 85 },
@@ -109,6 +115,7 @@ function analyzeCoverage() {
   return mockCoverage;
 }
 
+// Main analysis execution
 async function runAnalysis() {
   const results = {
     timestamp: new Date().toISOString(),
@@ -125,10 +132,8 @@ async function runAnalysis() {
   
   console.log('🎉 Analysis completed successfully!');
   
-  if (process.env.GITHUB_OUTPUT) {
-    const fs = require('fs');
-    fs.appendFileSync(process.env.GITHUB_OUTPUT, `results<<EOF\n${JSON.stringify(results)}\nEOF\n`);
-  }
+  // Output for GitHub Actions
+  console.log(`::set-output name=results::${JSON.stringify(results)}`);
 }
 
 if (require.main === module) {
